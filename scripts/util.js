@@ -1,4 +1,4 @@
-//const Marked = window.marked;
+const Marked = window.marked;
 
 // Marked.setOptions({
 //   highlight: (code, lang) =>
