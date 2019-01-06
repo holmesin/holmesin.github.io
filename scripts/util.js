@@ -1,4 +1,4 @@
-const Marked = window.marked;
+//const Marked = window.marked;
 
 // Marked.setOptions({
 //   highlight: (code, lang) =>
@@ -46,7 +46,7 @@ const generateToc = () => {
     topBtn.attr("style", "right: calc(2rem + 250px);");
   }
   topBtn.addClass("sidebar-active");
-  
+
   $(".markdown-body")
     .find("h2,h3,h4,h5,h6")
     .each(function(i, item) {
