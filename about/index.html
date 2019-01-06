@@ -362,11 +362,39 @@ height:50vh;
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
             <!-- 不可以删除，否则会调用post的layout  -->
+
 <main class="main about-page">
+    
+      <div id="about" style="margin: 4rem 2px"></div>
+<script async>
+  (function(){
+    let playerTimer = setInterval(function(){
+      if(!window.APlayer){
+        return
+      }
+
+      new APlayer({
+        container: document.getElementById('about'),
+        theme: '#e96900',
+        autoplay: true,
+        listFolded: false,
+        audio: [{"name":"路","artist":"隔壁团乐队","url":"//music.163.com/song/media/outer/url?id=28923455.mp3","cover":"//p1.music.126.net/Wty6mk2k3TS4IqwJy1qmFw==/18189220858862905.jpg?param=130y130"}]
+      });
+
+      clearInterval(playerTimer)
+    }, 10);
+  })()
+</script>
+
+    
     <article class="article-entry">
-        
+        <p>我々が岩壁の花を美しく思うのは<br>我々が岩壁に足を止めてしまうからだ<br>恐れ悚れ无き その花のように<br>空へと踏み出せずにいるからだ</p>
+<p>我们之所以觉得悬崖上的花朵美丽<br>那是因为我们会在悬崖停下脚步<br>而不是像那些毫不畏惧的花朵般<br>能向天空踏出一步</p>
+<p>——————A Boring Programmer<br><img src="/img/ml.jpg" alt="My Love"></p>
+
     </article>
 </main>
+
             <!-- profile -->
             
         </div>
@@ -659,9 +687,20 @@ height:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 17
+        Total : 18
         </div>
         <!-- search  -->
         
@@ -674,6 +713,11 @@ height:50vh;
     
     <div class="archive-year"> 2019 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/04</span><a class="archive-post-title" href="/passages/2019-01-04-kubernetes/">kubernetes 入门</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -701,12 +745,17 @@ height:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-columbia-icefield/">columbia icefield</a>
+            <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-Maligne-canyon/">maligne canyon</a>
         </li>
     
     
         <li class="archive-post-item">
             <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-bow-lake/">bow lake</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-columbia-icefield/">columbia icefield</a>
         </li>
     
     
@@ -726,11 +775,6 @@ height:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-Maligne-canyon/">maligne canyon</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
             <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-milky-way/">milky way</a>
         </li>
     
@@ -741,17 +785,17 @@ height:50vh;
     
     
         <li class="archive-post-item">
+            <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-old-tunnel/">old tunnel</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
             <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-on-the-road/">on the road</a>
         </li>
     
     
         <li class="archive-post-item">
             <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-volcanic-eruption/">volcanic eruption</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">09/08</span><a class="archive-post-title" href="/passages/2015-09-07-old-tunnel/">old tunnel</a>
         </li>
     
     
@@ -774,15 +818,15 @@ height:50vh;
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
-        <span class="sidebar-tag-name" data-tags="sunset"><span class="iconfont-archer">&#xe606;</span>sunset</span>
-    
-        <span class="sidebar-tag-name" data-tags="yellowstone"><span class="iconfont-archer">&#xe606;</span>yellowstone</span>
-    
         <span class="sidebar-tag-name" data-tags="night"><span class="iconfont-archer">&#xe606;</span>night</span>
     
         <span class="sidebar-tag-name" data-tags="milky way"><span class="iconfont-archer">&#xe606;</span>milky way</span>
     
-        <span class="sidebar-tag-name" data-tags="icefield"><span class="iconfont-archer">&#xe606;</span>icefield</span>
+        <span class="sidebar-tag-name" data-tags="sunset"><span class="iconfont-archer">&#xe606;</span>sunset</span>
+    
+        <span class="sidebar-tag-name" data-tags="yellowstone"><span class="iconfont-archer">&#xe606;</span>yellowstone</span>
+    
+        <span class="sidebar-tag-name" data-tags="canyon"><span class="iconfont-archer">&#xe606;</span>canyon</span>
     
         <span class="sidebar-tag-name" data-tags="jasper"><span class="iconfont-archer">&#xe606;</span>jasper</span>
     
@@ -790,11 +834,11 @@ height:50vh;
     
         <span class="sidebar-tag-name" data-tags="banff"><span class="iconfont-archer">&#xe606;</span>banff</span>
     
+        <span class="sidebar-tag-name" data-tags="icefield"><span class="iconfont-archer">&#xe606;</span>icefield</span>
+    
         <span class="sidebar-tag-name" data-tags="nature"><span class="iconfont-archer">&#xe606;</span>nature</span>
     
         <span class="sidebar-tag-name" data-tags="train"><span class="iconfont-archer">&#xe606;</span>train</span>
-    
-        <span class="sidebar-tag-name" data-tags="canyon"><span class="iconfont-archer">&#xe606;</span>canyon</span>
     
         <span class="sidebar-tag-name" data-tags="star"><span class="iconfont-archer">&#xe606;</span>star</span>
     
@@ -804,15 +848,19 @@ height:50vh;
     
         <span class="sidebar-tag-name" data-tags="mountain"><span class="iconfont-archer">&#xe606;</span>mountain</span>
     
-        <span class="sidebar-tag-name" data-tags="cloud"><span class="iconfont-archer">&#xe606;</span>cloud</span>
-    
-        <span class="sidebar-tag-name" data-tags="yoho"><span class="iconfont-archer">&#xe606;</span>yoho</span>
-    
         <span class="sidebar-tag-name" data-tags="hadoop"><span class="iconfont-archer">&#xe606;</span>hadoop</span>
     
         <span class="sidebar-tag-name" data-tags="分布式系统"><span class="iconfont-archer">&#xe606;</span>分布式系统</span>
     
+        <span class="sidebar-tag-name" data-tags="cloud"><span class="iconfont-archer">&#xe606;</span>cloud</span>
+    
+        <span class="sidebar-tag-name" data-tags="yoho"><span class="iconfont-archer">&#xe606;</span>yoho</span>
+    
         <span class="sidebar-tag-name" data-tags="bistro"><span class="iconfont-archer">&#xe606;</span>bistro</span>
+    
+        <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
+    
+        <span class="sidebar-tag-name" data-tags="kubernetes"><span class="iconfont-archer">&#xe606;</span>kubernetes</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
