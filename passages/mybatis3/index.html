@@ -292,7 +292,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">12</span>阅读时长: <span class="post-count reading-time">1 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">612</span>阅读时长: <span class="post-count reading-time">2 min</span></span>
                     </div>
                 
                 
@@ -435,6 +435,57 @@ height:50vh;
     <article class="article-entry">
         <h1 id="mybatis源码剖析"><a href="#mybatis源码剖析" class="headerlink" title="mybatis源码剖析"></a>mybatis源码剖析</h1><p><img src="/img/mybatis.jpg" alt="Mybatis"><br><a id="more"></a></p>
 <h2 id="mybatis源码剖析-1"><a href="#mybatis源码剖析-1" class="headerlink" title="mybatis源码剖析"></a>mybatis源码剖析</h2><h3 id="Mybatis架构"><a href="#Mybatis架构" class="headerlink" title="Mybatis架构"></a>Mybatis架构</h3><p><img src="/img/mybatis/mybatis15.png" alt="mybatis15"></p>
+<p><img src="/img/mybatis/mybatis16.png" alt="mybatis16"></p>
+<p><img src="/img/mybatis/mybatis17.png" alt="mybatis17"></p>
+<h3 id="总体流程"><a href="#总体流程" class="headerlink" title="总体流程"></a>总体流程</h3><ul>
+<li>加载配置并初始化：配置文件和注解<ul>
+<li>主配置文件封装到Configuration,sql配置信息加载到mappedstatement对象</li>
+</ul>
+</li>
+<li>接收调用请求：传入sql的ID和参数对象，请求传入处理层处理</li>
+<li>处理操作<ul>
+<li>根据sqlID查找对应的MappedStatement对象</li>
+<li>根据参数解析MappedStatement对象，得到最终sql和传入参数</li>
+<li>获取数据库连接，执行结果</li>
+<li>根据MappedStatement对象结果映射配置，得到结果进行转换，得到最终处理结果</li>
+</ul>
+</li>
+</ul>
+<h3 id="mybatis初始化过程"><a href="#mybatis初始化过程" class="headerlink" title="mybatis初始化过程"></a>mybatis初始化过程</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">build</span><span class="params">(InputStream inputStream, String environment, Properties properties)</span> </span>&#123;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line"><span class="comment">// XMLConfigBuilder     mybatis</span></span><br><span class="line">XMLConfigBuilder parser = <span class="keyword">new</span> XMLConfigBuilder(inputStream, environment,</span><br><span class="line">properties);</span><br><span class="line"><span class="comment">//             parser.parse()     Configuration  </span></span><br><span class="line">      <span class="keyword">return</span> build(parser.parse());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      <span class="keyword">throw</span> ExceptionFactory.wrapException(<span class="string">"Error building SqlSession."</span>, e)</span><br></pre></td></tr></table></figure>
+<p>配置文件加载后由org.apache.ibatis.session.Configuration维护</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 5.        </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">build</span><span class="params">(Configuration config)</span> </span>&#123;</span><br><span class="line"><span class="comment">//   DefaultSqlSessionFactory     Configuration    </span></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> DefaultSqlSessionFactory(config);<span class="comment">//构建者设计模式</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="执行sql流程"><a href="#执行sql流程" class="headerlink" title="执行sql流程"></a>执行sql流程</h3><p>sqlSession接口</p>
+<p>sqlSessionManager已弃用</p>
+<p>sqlSession线程不安全，使用完需要close()</p>
+<p>Executor 三个实现类</p>
+<ol>
+<li><p>BatchExecutor (重用语句并执行批量更新过)</p>
+</li>
+<li><p>ReuseExecutor 重用预处理语句prepared statements </p>
+</li>
+<li><p>SimpleExecutor</p>
+</li>
+</ol>
+<p>opensession时将executor初始化</p>
+<h3 id="mapper代理方式"><a href="#mapper代理方式" class="headerlink" title="mapper代理方式"></a>mapper代理方式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123; </span><br><span class="line"><span class="comment">//前3步相同      </span></span><br><span class="line">    InputStream inputStream = Resources.getResourceAsStream(<span class="string">"sqlMapConfig.xml"</span>);</span><br><span class="line">    SqlSessionFactory factory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">    SqlSession sqlSession = factory.openSession();</span><br><span class="line"><span class="comment">//      不再调用SqlSession  api，而是获得接口对象，调用接口方法                     </span></span><br><span class="line">		UserMapper mapper = sqlSession.getMapper(UserMapper.class); </span><br><span class="line">		List&lt;User&gt; list = mapper.getUserByName(<span class="string">"tom"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="构建者设计模式"><a href="#构建者设计模式" class="headerlink" title="构建者设计模式"></a>构建者设计模式</h3><blockquote>
+<p>Builder模式：将一个复杂对象得构建与它得表示分离，使得同样得构建过程可以创建不同得表示</p>
+</blockquote>
+<blockquote>
+<p>它属于创建类模式</p>
+</blockquote>
+<p>一般来说，一个对象的构建比较复杂，超出了构造函数所能包含的范围就可以使用工厂模式或者builder模式。相对与工厂会产出完整产品，builder应用于更复杂对象构建，甚至只构建产品一部分。</p>
+<blockquote>
+<p>直白说，使用多个简单的对象一步一步构建一个复杂对象</p>
+</blockquote>
+<p><img src="/img/mybatis/mybatis18.png" alt="mybatis18"></p>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>简单工厂模式：静态工厂模式</p>
+<p>根据参数不同，返回不同类的实例。专门定义一个类来负责创建其他类的实例，被创建的实例通常具有相同父类</p>
+<p>psvm</p>
+<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3><blockquote>
+<p>Proxy Pattern: 给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</p>
+</blockquote>
+<p>它是一种对象结构型模式</p>
 
     </article>
     <!-- license  -->
@@ -443,7 +494,7 @@ height:50vh;
             <p>原文作者：<a href="http://holmesin.github.io">Holmesin</a>
             </p><p>原文链接：<a href="http://holmesin.github.io/passages/mybatis3/">http://holmesin.github.io/passages/mybatis3/</a>
             </p><p>发表日期：<a href="http://holmesin.github.io/passages/mybatis3/">October 7th 2020, 12:26:24 am</a>
-            </p><p>更新日期：<a href="http://holmesin.github.io/passages/mybatis3/">October 7th 2020, 12:28:22 am</a>
+            </p><p>更新日期：<a href="http://holmesin.github.io/passages/mybatis3/">October 14th 2020, 11:38:42 am</a>
             </p><p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -780,7 +831,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#mybatis源码剖析"><span class="toc-number">1.</span> <span class="toc-text">mybatis源码剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mybatis源码剖析-1"><span class="toc-number">1.1.</span> <span class="toc-text">mybatis源码剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mybatis架构"><span class="toc-number">1.1.1.</span> <span class="toc-text">Mybatis架构</span></a></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#mybatis源码剖析"><span class="toc-number">1.</span> <span class="toc-text">mybatis源码剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mybatis源码剖析-1"><span class="toc-number">1.1.</span> <span class="toc-text">mybatis源码剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mybatis架构"><span class="toc-number">1.1.1.</span> <span class="toc-text">Mybatis架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总体流程"><span class="toc-number">1.1.2.</span> <span class="toc-text">总体流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mybatis初始化过程"><span class="toc-number">1.1.3.</span> <span class="toc-text">mybatis初始化过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行sql流程"><span class="toc-number">1.1.4.</span> <span class="toc-text">执行sql流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mapper代理方式"><span class="toc-number">1.1.5.</span> <span class="toc-text">mapper代理方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构建者设计模式"><span class="toc-number">1.1.6.</span> <span class="toc-text">构建者设计模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#工厂模式"><span class="toc-number">1.1.7.</span> <span class="toc-text">工厂模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代理模式"><span class="toc-number">1.1.8.</span> <span class="toc-text">代理模式</span></a></li></ol></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -1157,12 +1208,12 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">09/07</span><a class="archive-post-title" href="/passages/2015-09-07-lake-louise/">lake louise</a>
+            <span class="archive-post-date">09/07</span><a class="archive-post-title" href="/passages/2015-09-07-kelowna-holmes/">kelowna</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">09/07</span><a class="archive-post-title" href="/passages/2015-09-07-kelowna-holmes/">kelowna</a>
+            <span class="archive-post-date">09/07</span><a class="archive-post-title" href="/passages/2015-09-07-lake-louise/">lake louise</a>
         </li>
     
     
@@ -1197,12 +1248,12 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">08/28</span><a class="archive-post-title" href="/passages/2015-08-28-milky-way/">milky way</a>
+            <span class="archive-post-date">08/28</span><a class="archive-post-title" href="/passages/2015-08-28-sunset-at-grand-prismatic-spring/">sunset at grand prismatic spring</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">08/28</span><a class="archive-post-title" href="/passages/2015-08-28-sunset-at-grand-prismatic-spring/">sunset at grand prismatic spring</a>
+            <span class="archive-post-date">08/28</span><a class="archive-post-title" href="/passages/2015-08-28-milky-way/">milky way</a>
         </li>
     
     </ul></div>
@@ -1210,13 +1261,13 @@ top:50vh;
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
-        <span class="sidebar-tag-name" data-tags="night"><span class="iconfont-archer">&#xe606;</span>night</span>
-    
-        <span class="sidebar-tag-name" data-tags="milky way"><span class="iconfont-archer">&#xe606;</span>milky way</span>
-    
         <span class="sidebar-tag-name" data-tags="sunset"><span class="iconfont-archer">&#xe606;</span>sunset</span>
     
         <span class="sidebar-tag-name" data-tags="yellowstone"><span class="iconfont-archer">&#xe606;</span>yellowstone</span>
+    
+        <span class="sidebar-tag-name" data-tags="night"><span class="iconfont-archer">&#xe606;</span>night</span>
+    
+        <span class="sidebar-tag-name" data-tags="milky way"><span class="iconfont-archer">&#xe606;</span>milky way</span>
     
         <span class="sidebar-tag-name" data-tags="canyon"><span class="iconfont-archer">&#xe606;</span>canyon</span>
     
@@ -1254,8 +1305,6 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="kubernetes"><span class="iconfont-archer">&#xe606;</span>kubernetes</span>
     
-        <span class="sidebar-tag-name" data-tags="数据结构"><span class="iconfont-archer">&#xe606;</span>数据结构</span>
-    
         <span class="sidebar-tag-name" data-tags="java"><span class="iconfont-archer">&#xe606;</span>java</span>
     
         <span class="sidebar-tag-name" data-tags="框架"><span class="iconfont-archer">&#xe606;</span>框架</span>
@@ -1263,6 +1312,8 @@ top:50vh;
         <span class="sidebar-tag-name" data-tags="java学习"><span class="iconfont-archer">&#xe606;</span>java学习</span>
     
         <span class="sidebar-tag-name" data-tags="mybatis"><span class="iconfont-archer">&#xe606;</span>mybatis</span>
+    
+        <span class="sidebar-tag-name" data-tags="数据结构"><span class="iconfont-archer">&#xe606;</span>数据结构</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
